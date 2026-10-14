@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    image: obs-control-app
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    env_file: .env
+    environment:
+      OBS_HOST: host.docker.internal
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    restart: unless-stopped

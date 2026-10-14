@@ -12,6 +12,7 @@ A SvelteKit app for controlling OBS Studio from the browser: start and stop reco
 - Live status: refreshes every 2 seconds, so the timecode and scenes created in OBS appear automatically
 - Scene list and status kept in a Svelte store
 - Error messages in the UI when OBS is unreachable or an action fails; errors are logged on the server
+- Dockerfile and Docker Compose setup
 
 ## Setup
 
@@ -27,7 +28,10 @@ cp .env.example .env
 OBS_HOST=127.0.0.1
 OBS_PORT=4455
 OBS_PASSWORD=your-obs-websocket-password
+APP_PORT=3000
 ```
+
+`APP_PORT` is only used by Docker (see below).
 
 **3. Install and run:**
 
@@ -46,6 +50,22 @@ npm run preview
 ```
 
 Open http://localhost:4173.
+
+## Docker
+
+Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker with Compose). With OBS running on the same machine and `.env` filled in:
+
+```bash
+docker compose up --build
+```
+
+Open http://localhost:3000, or the port you set in `APP_PORT`.
+
+- Compose reads the OBS settings from `.env` and sets `OBS_HOST` to `host.docker.internal`, because inside the container `127.0.0.1` would be the container itself. If OBS runs on another machine, change `OBS_HOST` in `docker-compose.yml` to that machine's IP.
+- If port 3000 is already in use or blocked (common on Windows), set another port in `.env`, for example `APP_PORT=8080`.
+- Run in the background with `docker compose up -d`, see logs with `docker compose logs -f`, stop with `docker compose down`.
+
+The image is built in two stages: the first installs dependencies and builds the app, the second contains only the built server and its production dependencies.
 
 ## Project structure
 
