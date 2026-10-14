@@ -20,7 +20,6 @@ async function connectObs(): Promise<OBSWebSocket> {
   const obs = new OBSWebSocket();
 
   try {
-    //Elin => i delete  {rpcVersion: 1}
     await obs.connect(`ws://${host}:${port}`, password);
     return obs;
   } catch (error) {
